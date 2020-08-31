@@ -1,0 +1,44 @@
+{
+    "name": "stylis-plugin-logical",
+    "version": "1.0.0",
+    "description": "Stylis plugin allowing the use of CSS Logical Properties and Values",
+    "main": "index.js",
+    "scripts": {
+        "build": "babel src --out-dir dist --ignore \"src/**/*.test.js\"",
+        "test": "jest"
+    },
+    "peerDependencies": {
+        "stylis": "4.x"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/hazem3500/stylis-plugin-logical.git"
+    },
+    "keywords": [
+        "stylis",
+        "stylis-plugin",
+        "css-in-js",
+        "css",
+        "emotion",
+        "styled-components",
+        "plugin",
+        "preprocessor",
+        "css-logical"
+    ],
+    "author": "Hazem Osama <hazem3500@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/hazem3500/stylis-plugin-logical/issues"
+    },
+    "homepage": "https://github.com/hazem3500/stylis-plugin-logical#readme",
+    "devDependencies": {
+        "@babel/cli": "^7.10.5",
+        "@babel/core": "^7.11.4",
+        "@babel/preset-env": "^7.11.0",
+        "jest": "^26.4.2",
+        "prettier": "^2.1.1"
+    },
+    "dependencies": {
+        "stylis": "^4.0.2"
+    }
+}
