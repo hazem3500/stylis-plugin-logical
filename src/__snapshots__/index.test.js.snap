@@ -3,12 +3,14 @@
 exports[`padding logical properties to be transformed padding-inline-end to be transformed to fallback 1`] = `
 "
         padding-inline-end: 50px;
-        [dir=ltr] & {
-            padding-right: 50px;
-        }
-
-        [dir=rtl] & {
-            padding-left: 50px;
+        @supports not (padding-inline-end: 50px) {
+            [dir=ltr] & {
+                padding-right: 50px;
+            }
+            
+            [dir=rtl] & {
+                padding-left: 50px;
+            }
         }
     "
 `;
@@ -16,12 +18,14 @@ exports[`padding logical properties to be transformed padding-inline-end to be t
 exports[`padding logical properties to be transformed padding-inline-start to be transformed to fallback 1`] = `
 "
         padding-inline-start: 50px;
-        [dir=ltr] & {
-            padding-left: 50px;
-        }
-
-        [dir=rtl] & {
-            padding-right: 50px;
+        @supports not (padding-inline-start: 50px) {
+            [dir=ltr] & {
+                padding-left: 50px;
+            }
+            
+            [dir=rtl] & {
+                padding-right: 50px;
+            }
         }
     "
 `;
