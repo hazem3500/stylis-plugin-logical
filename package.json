@@ -2,7 +2,7 @@
     "name": "stylis-plugin-logical",
     "version": "1.0.0",
     "description": "Stylis plugin allowing the use of CSS Logical Properties and Values",
-    "main": "src/index.js",
+    "main": "dist/main.js",
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/"
     },
