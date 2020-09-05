@@ -104,3 +104,6 @@ dist
 .tern-port
 
 .npmrc
+
+example/
+stylis-plugin-logical.code-workspace

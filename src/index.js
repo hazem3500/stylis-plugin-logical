@@ -1,26 +1,29 @@
-import {compile} from 'stylis'
+import { compile, serialize, middleware, stringify } from 'stylis'
 import transforms from './utils/transforms';
 
-export const STYLIS_CONTEXTS = {
-    POST_PROCESS: -2,
-    PREPARATION: -1,
-    NEWLINE: 0,
-    PROPERTY: 1,
-    SELECTOR_BLOCK: 2,
-    AT_RULE: 3
-}
+const stylis = (content) => serialize(compile(content), stringify);
 
-export default function stylisPluginLogical(context, content) {
-    if (context === STYLIS_CONTEXTS.PROPERTY) {
-        const propertyAST = compile(content)[0];
-        if (transforms.hasOwnProperty(propertyAST.props)) {
-            return transforms[propertyAST.props](propertyAST.children);
-        }
-        return content;
+function generateRuleFallback({ children, selector }) {
+    const logicalProperties = children.filter(
+        (child) => transforms[child.props]
+    );
+    if (logicalProperties.length) {
+        let fallback = ``;
+        logicalProperties.forEach((property) => {
+            fallback = fallback.concat(
+                transforms[property.props](property.children)
+            );
+        });
+        return stylis(`${selector} {${fallback}}`);
     }
 }
 
 
-export function pluginWithPropertyContext(content) {
-    return stylisPluginLogical(STYLIS_CONTEXTS.PROPERTY, content);
+export default function stylisPluginLogical(node) {
+    if (node.type === 'rule') {
+        return generateRuleFallback({
+            children: node.children,
+            selector: node.props,
+        });
+    }
 }
