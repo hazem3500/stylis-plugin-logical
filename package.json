@@ -1,15 +1,12 @@
 {
     "name": "stylis-plugin-logical",
-    "version": "1.0.2",
+    "version": "2.0.0",
     "description": "Stylis plugin allowing the use of CSS Logical Properties and Values",
     "main": "dist/main.js",
     "scripts": {
         "build": "webpack",
         "test": "jest",
         "prepublish": "npm run build"
-    },
-    "peerDependencies": {
-        "stylis": "4.x"
     },
     "repository": {
         "type": "git",
@@ -40,9 +37,7 @@
         "jest": "^26.4.2",
         "prettier": "^2.1.1",
         "webpack": "^4.44.1",
-        "webpack-cli": "^3.3.12"
-    },
-    "dependencies": {
-        "stylis": "^4.0.2"
+        "webpack-cli": "^3.3.12",
+        "stylis": "^3.5.4"
     }
 }

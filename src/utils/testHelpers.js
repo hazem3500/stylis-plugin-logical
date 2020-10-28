@@ -1,5 +1,8 @@
-import { serialize, compile, middleware } from 'stylis';
+import Stylis from 'stylis';
 import stylisPluginLogical from '../index';
 
-export const stylis = (content) =>
-    serialize(compile(`.test {${content}}`), middleware([stylisPluginLogical]));
+export const stylis = (content) => {
+    const stylisInstance = new Stylis({ prefix: false });
+    stylisInstance.use(stylisPluginLogical());
+    return stylisInstance('', `.test {${content}}`);
+};

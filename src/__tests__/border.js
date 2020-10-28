@@ -3,16 +3,16 @@ import { stylis } from "../utils/testHelpers.js";
 describe("border logical properties to be transformed to fallback", () => {
   test("border-block properties", () => {
     expect(stylis("border-block: 1px solid black;")).toMatchInlineSnapshot(
-      `".test{border-top:1px solid black;border-bottom:1px solid black;border-block:1px solid black;}"`
+      `".test{border-block:1px solid black;}.test{border-top:1px solid black;border-bottom:1px solid black;}"`
     );
     expect(stylis("border-block-color: black;")).toMatchInlineSnapshot(
-      `".test{border-top-color:black;border-bottom-color:black;border-block:black;}"`
+      `".test{border-block-color:black;}.test{border-top-color:black;border-bottom-color:black;}"`
     );
     expect(stylis("border-block-style: solid;")).toMatchInlineSnapshot(
-      `".test{border-top-style:solid;border-bottom-style:solid;border-block:solid;}"`
+      `".test{border-block-style:solid;}.test{border-top-style:solid;border-bottom-style:solid;}"`
     );
     expect(stylis("border-block-width: 1px;")).toMatchInlineSnapshot(
-      `".test{border-top-width:1px;border-bottom-width:1px;border-block:1px;}"`
+      `".test{border-block-width:1px;}.test{border-top-width:1px;border-bottom-width:1px;}"`
     );
   });
 
@@ -20,46 +20,46 @@ describe("border logical properties to be transformed to fallback", () => {
     expect(
       stylis("border-block-start: 1px solid black;")
     ).toMatchInlineSnapshot(
-      `".test{border-top:1px solid black;border-block-start:1px solid black;}"`
+      `".test{border-block-start:1px solid black;}.test{border-top:1px solid black;}"`
     );
     expect(stylis("border-block-start-color: black;")).toMatchInlineSnapshot(
-      `".test{border-top-color:black;border-block-start-color:black;}"`
+      `".test{border-block-start-color:black;}.test{border-top-color:black;}"`
     );
     expect(stylis("border-block-start-style: solid;")).toMatchInlineSnapshot(
-      `".test{border-top-style:solid;border-block-start-style:solid;}"`
+      `".test{border-block-start-style:solid;}.test{border-top-style:solid;}"`
     );
     expect(stylis("border-block-start-width: 1px;")).toMatchInlineSnapshot(
-      `".test{border-top-width:1px;border-block-start-width:1px;}"`
+      `".test{border-block-start-width:1px;}.test{border-top-width:1px;}"`
     );
   });
 
   test("border-block-end properties", () => {
     expect(stylis("border-block-end: 1px solid black;")).toMatchInlineSnapshot(
-      `".test{border-bottom:1px solid black;border-block-end:1px solid black;}"`
+      `".test{border-block-end:1px solid black;}.test{border-bottom:1px solid black;}"`
     );
     expect(stylis("border-block-end-color: black;")).toMatchInlineSnapshot(
-      `".test{border-bottom-color:black;border-block-end-color:black;}"`
+      `".test{border-block-end-color:black;}.test{border-bottom-color:black;}"`
     );
     expect(stylis("border-block-end-style: solid;")).toMatchInlineSnapshot(
-      `".test{border-bottom-style:solid;border-block-end-style:solid;}"`
+      `".test{border-block-end-style:solid;}.test{border-bottom-style:solid;}"`
     );
     expect(stylis("border-block-end-width: 1px;")).toMatchInlineSnapshot(
-      `".test{border-bottom-width:1px;border-block-end-width:1px;}"`
+      `".test{border-block-end-width:1px;}.test{border-bottom-width:1px;}"`
     );
   });
 
   test("border-inline properties", () => {
     expect(stylis("border-inline: 1px solid black;")).toMatchInlineSnapshot(
-      `".test{border-left:1px solid black;border-right:1px solid black;border-inline:1px solid black;}"`
+      `".test{border-inline:1px solid black;}.test{border-left:1px solid black;border-right:1px solid black;}"`
     );
     expect(stylis("border-inline-color: black;")).toMatchInlineSnapshot(
-      `".test{border-left-color:black;border-right-color:black;border-inline-color:black;}"`
+      `".test{border-inline-color:black;}.test{border-left-color:black;border-right-color:black;}"`
     );
     expect(stylis("border-inline-style: solid;")).toMatchInlineSnapshot(
-      `".test{border-left-style:solid;border-right-style:solid;border-inline-style:solid;}"`
+      `".test{border-inline-style:solid;}.test{border-left-style:solid;border-right-style:solid;}"`
     );
     expect(stylis("border-inline-width: 1px;")).toMatchInlineSnapshot(
-      `".test{border-left-width:1px;border-right-width:1px;border-inline-width:1px;}"`
+      `".test{border-inline-width:1px;}.test{border-left-width:1px;border-right-width:1px;}"`
     );
   });
 
@@ -118,15 +118,15 @@ describe("border logical properties to be transformed to fallback", () => {
       stylis("border-color: blue red yellow green;")
     ).toMatchInlineSnapshot(`".test{border-color:blue red yellow green;}"`);
     expect(stylis("border-color: logical black;")).toMatchInlineSnapshot(
-      `".test{border-color:black;border-color:logical black;}"`
+      `".test{border-color:logical black;}.test{border-color:black;}"`
     );
     expect(stylis("border-color: logical blue red;")).toMatchInlineSnapshot(
-      `".test{border-color:blue red;border-color:logical blue red;}"`
+      `".test{border-color:logical blue red;}.test{border-color:blue red;}"`
     );
     expect(
       stylis("border-color: logical blue red yellow;")
     ).toMatchInlineSnapshot(
-      `".test{border-color:blue red yellow;border-color:logical blue red yellow;}"`
+      `".test{border-color:logical blue red yellow;}.test{border-color:blue red yellow;}"`
     );
     expect(
       stylis("border-color: logical blue red yellow green;")
@@ -145,15 +145,15 @@ describe("border logical properties to be transformed to fallback", () => {
       `".test{border-style:solid dashed dotted double;}"`
     );
     expect(stylis("border-style: logical solid;")).toMatchInlineSnapshot(
-      `".test{border-style:solid;border-style:logical solid;}"`
+      `".test{border-style:logical solid;}.test{border-style:solid;}"`
     );
     expect(stylis("border-style: logical solid dashed;")).toMatchInlineSnapshot(
-      `".test{border-style:solid dashed;border-style:logical solid dashed;}"`
+      `".test{border-style:logical solid dashed;}.test{border-style:solid dashed;}"`
     );
     expect(
       stylis("border-style: logical solid dashed dotted;")
     ).toMatchInlineSnapshot(
-      `".test{border-style:solid dashed dotted;border-style:logical solid dashed dotted;}"`
+      `".test{border-style:logical solid dashed dotted;}.test{border-style:solid dashed dotted;}"`
     );
     expect(
       stylis("border-style: logical solid dashed dotted double;")
@@ -170,13 +170,13 @@ describe("border logical properties to be transformed to fallback", () => {
       `".test{border-width:1px 2px 3px 4px;}"`
     );
     expect(stylis("border-width: logical 1px;")).toMatchInlineSnapshot(
-      `".test{border-width:1px;border-width:logical 1px;}"`
+      `".test{border-width:logical 1px;}.test{border-width:1px;}"`
     );
     expect(stylis("border-width: logical 1px 2px;")).toMatchInlineSnapshot(
-      `".test{border-width:1px 2px;border-width:logical 1px 2px;}"`
+      `".test{border-width:logical 1px 2px;}.test{border-width:1px 2px;}"`
     );
     expect(stylis("border-width: logical 1px 2px 3px;")).toMatchInlineSnapshot(
-      `".test{border-width:1px 2px 3px;border-width:logical 1px 2px 3px;}"`
+      `".test{border-width:logical 1px 2px 3px;}.test{border-width:1px 2px 3px;}"`
     );
     expect(
       stylis("border-width: logical 1px 2px 3px 4px;")

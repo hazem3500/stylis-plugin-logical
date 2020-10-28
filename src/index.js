@@ -1,29 +1,53 @@
-import { compile, serialize, middleware, stringify } from 'stylis'
 import transforms from './utils/transforms';
+import { generateStyles } from './utils/index';
 
-const stylis = (content) => serialize(compile(content), stringify);
+export default function LogicalPlugin() {
+    let skip = false;
+    let store = {};
 
-function generateRuleFallback({ children, selector }) {
-    const logicalProperties = children.filter(
-        (child) => transforms[child.props]
-    );
-    if (logicalProperties.length) {
-        let fallback = ``;
-        logicalProperties.forEach((property) => {
-            fallback = fallback.concat(
-                transforms[property.props](property.children)
-            );
-        });
-        return stylis(`${selector} {${fallback}}`);
+    function generateFallbackStyles({ selector, property, value }) {
+        if (!transforms[property]) return null;
+        if (!store[selector]) store[selector] = [];
+        store[selector].push(transforms[property](value));
     }
+
+    return function (
+        context,
+        content,
+        selectors,
+        parents,
+        line,
+        column,
+        length
+    ) {
+        if (skip) return;
+        switch (context) {
+            case 1:
+                var index = content.indexOf(':');
+                var property = content.substring(0, index);
+                var value = content.substring(index + 1).trim();
+                var prop = name + ':' + value;
+                return generateFallbackStyles({
+                    selector: selectors.join(' '),
+                    property,
+                    value,
+                });
+            case -2:
+                skip = true;
+                const logicalStyles = generateLogicalStyles(store);
+                return content + this('', logicalStyles);
+            default:
+                break;
+        }
+    };
 }
+function generateLogicalStyles(store) {
+    let logicalStyles = ``;
+    Object.keys(store).forEach((selector) => {
+        logicalStyles += store[selector]
+            .map((style) => generateStyles(selector, style))
+            .join(' ');
+    });
 
-
-export default function stylisPluginLogical(node) {
-    if (node.type === 'rule') {
-        return generateRuleFallback({
-            children: node.children,
-            selector: node.props,
-        });
-    }
+    return logicalStyles;
 }

@@ -1,211 +1,168 @@
-export function generateInlineFallbackStyles({ logicalStyle, ltrFallbackStyles, rtlFallbackStyles }) {
+export function generateStyles(selector, { base, ltr, rtl } = {}) {
     return `
-        & {
-            ${logicalStyle};
-        }
-        [dir=ltr] & {
-            ${ltrFallbackStyles};
-        }
-        
-        [dir=rtl] & {
-            ${rtlFallbackStyles};
-        }
-    `;
+      ${
+          base
+              ? `${selector} {
+          ${base}
+      }`
+              : ''
+      }
+      ${
+          ltr
+              ? `[dir=ltr] ${selector} {
+          ${ltr}
+      }`
+              : ''
+      }
+      ${
+          rtl
+              ? `[dir=rtl] ${selector} {
+          ${rtl}
+      }`
+              : ''
+      }
+  `;
 }
 
-export function transformLogicalProperty({
-    logicalProperty,
-    fallbackProperties,
-    singleValueProperty = false,
+export function transformLogicalProperty({ properties }) {
+    return (value) => ({
+        base: properties.map((property) => `${property}: ${value};`).join(''),
+    });
+}
+
+export function transformLogicalInlineProperty({
+    ltrFallbackStyle,
+    rtlFallbackStyle,
 }) {
     return (value) => {
-        const valueList = value.trim().split(/\s+/);
-        return `
-            & {
-                ${toArray(fallbackProperties)
-                    .map(
-                        (property, i) =>
-                            `${property}: ${
-                                singleValueProperty
-                                    ? valueList[
-                                          Math.min(valueList.length - 1, i)
-                                      ]
-                                    : value
-                            };`
-                    )
-                    .join('')}
-                ${logicalProperty}: ${value};
-            }
-        `;
+        return {
+            ltr: `
+          ${ltrFallbackStyle}: ${value};
+      `,
+            rtl: `
+          ${rtlFallbackStyle}: ${value};
+      `,
+        };
     };
-}
-
-
-export function transformLogicalInlineProperty({logicalProperty, ltrFallbackStyle, rtlFallbackStyle}) {
-    return (value) => generateInlineFallbackStyles({
-        logicalStyle: `${logicalProperty}: ${value}`,
-        ltrFallbackStyles: `${ltrFallbackStyle}: ${value}`,
-        rtlFallbackStyles: `${rtlFallbackStyle}: ${value}`
-    })
 }
 
 export function transformLogicalInlinePropertyWithShorthand({
-    logicalProperty,
     ltrStartProperty,
     ltrEndProperty,
-    directionalSingleValueProperty = false,
 }) {
     return (value) => {
-        const [startValue, endValue = startValue] = value.trim().split(/\s+/);
-        return `
-            & {
-                ${logicalProperty}: ${value};
-            }
-            [dir=ltr] & {
-                ${ltrStartProperty}: ${directionalSingleValueProperty ? startValue : value};
-                ${ltrEndProperty}: ${directionalSingleValueProperty ? endValue : value};
-            }
-            [dir=rtl] & {
-                ${ltrEndProperty}: ${directionalSingleValueProperty ? startValue : value};
-                ${ltrStartProperty}: ${directionalSingleValueProperty ? endValue : value};
-            }
-        `;
-    };
-}
-
-export function transform4DimensionalLogicalProperty({property}) {
-    return (value) => {
-        const [keyword, ...valueList] = value.trim().split(/\s+/);
-        if (keyword !== 'logical')
-            return `
-            & {
-                ${property}: ${value};
-            }
-        `;
-        else if (valueList.length !== 4) {
-            return `
-                & {
-                    ${property}: ${valueList.join(' ')};
-                    ${property}: ${value};
-                }
-            `;
-        } else {
-            return `
-                & {
-                    ${property}: ${value};
-                }
-
-                [dir=ltr] & {
-                    ${property}: ${valueList[0]} ${valueList[3]} ${valueList[2]} ${
-                valueList[1]
-            };
-                }
-
-                [dir=rtl] & {
-                    ${property}: ${valueList.join(' ')}
-                }
-            `;
-        }
-    };
-}
-
-export function transform4DimensionalDirectionalLogicalProperty({property, blockStartProperty, blockEndProperty, inlineStartProperty, inlineEndProperty}) {
-    return (value) => {
-        const [keyword, ...valueList] = value.trim().split(/\s+/);
-        if (keyword !== 'logical')
-            return `
-            & {
-                ${property}: ${value};
-            }
-        `;
-        else if (valueList.length === 1) {
-            return `
-                & {
-                    ${blockStartProperty}: ${valueList[0]};
-                    ${inlineEndProperty}: ${valueList[0]};
-                    ${blockEndProperty}: ${valueList[0]};
-                    ${inlineStartProperty}: ${valueList[0]};
-                }
-            `;
-        } else if (valueList.length === 2) {
-            return `
-                & {
-                    ${blockStartProperty}: ${valueList[0]};
-                    ${inlineEndProperty}: ${valueList[1]};
-                    ${blockEndProperty}: ${valueList[0]};
-                    ${inlineStartProperty}: ${valueList[1]};
-                }
-            `;
-        } else if (valueList.length === 3) {
-            return `
-                & {
-                    ${blockStartProperty}: ${valueList[0]};
-                    ${inlineEndProperty}: ${valueList[1]};
-                    ${blockEndProperty}: ${valueList[2]};
-                    ${inlineStartProperty}: ${valueList[1]};
-                }
-            `;
-        } else if (valueList.length === 4) {
-            return `
-                & {
-                    ${blockStartProperty}: ${valueList[0]};
-                    ${blockEndProperty}: ${valueList[2]};
-                }
-
-                [dir=ltr] & {
-                    ${inlineEndProperty}: ${valueList[3]};
-                    ${inlineStartProperty}: ${valueList[1]};
-                }
-
-                [dir=rtl] & {
-                    ${inlineEndProperty}: ${valueList[1]};
-                    ${inlineStartProperty}: ${valueList[3]};
-                }
-            `;
-        }
-    };
-}
-
-export function transformPropertyWithLogicalDirectionalValues({ property }) {
-    return (value) => {
-        const logicalValues = {
-            'inline-start': {
-                ltrFallback: 'left',
-                rtlFallback: 'right',
-            },
-            'inline-end': {
-                ltrFallback: 'right',
-                rtlFallback: 'left',
-            },
-            'start': {
-                ltrFallback: 'left',
-                rtlFallback: 'right',
-            },
-            'end': {
-                ltrFallback: 'right',
-                rtlFallback: 'left',
-            },
+        const { baseValue, startValue, endValue } = getInlineValue(value);
+        return {
+            base:
+                baseValue &&
+                `
+          ${ltrStartProperty}: ${baseValue};
+          ${ltrEndProperty}: ${baseValue};
+      `,
+            ltr:
+                startValue &&
+                endValue &&
+                `
+          ${ltrStartProperty}: ${startValue};
+          ${ltrEndProperty}: ${endValue};
+      `,
+            rtl:
+                startValue &&
+                endValue &&
+                `
+          ${ltrEndProperty}: ${startValue};
+          ${ltrStartProperty}: ${endValue};
+      `,
         };
-        if (!logicalValues[value]) {
-            return `
-                & {
-                    ${property}: ${value};
-                }
-            `;
-        } else {
-            return `
-                & {
-                    ${property}: ${value};
-                }
+    };
+}
 
-                [dir=ltr] & {
-                    ${property}: ${logicalValues[value].ltrFallback}
-                }
+export function transform4DimensionalDirectionalLogicalProperty({
+    blockStartProperty,
+    blockEndProperty,
+    inlineStartProperty,
+    inlineEndProperty,
+}) {
+    return (value) => {
+        const { isLogical, rawValue } = extractLogicalValue(value);
+        const {
+            blockStartValue,
+            blockEndValue,
+            inlineStartValue,
+            inlineEndValue,
+        } = getFourDimensionalValue(rawValue);
+        const hasLTRAndRTLRules =
+            isLogical && inlineStartValue !== inlineEndValue;
+        return {
+            base: `
+          ${blockStartProperty}: ${blockStartValue};
+          ${blockEndProperty}: ${blockEndValue};
+          ${
+              !hasLTRAndRTLRules
+                  ? `
+              ${inlineStartProperty}: ${inlineStartValue};
+              ${inlineEndProperty}: ${inlineEndValue};
+          `
+                  : ''
+          }
+      `,
+            ltr:
+                hasLTRAndRTLRules &&
+                `
+          ${inlineStartProperty}: ${inlineEndValue};
+          ${inlineEndProperty}: ${inlineStartValue};
+      `,
+            rtl:
+                hasLTRAndRTLRules &&
+                `
+          ${inlineStartProperty}: ${inlineStartValue};
+          ${inlineEndProperty}: ${inlineEndValue};
+      `,
+        };
+    };
+}
 
-                [dir=rtl] & {
-                    ${property}: ${logicalValues[value].rtlFallback}
-                }
-            `;
+export function transform4DimensionalLogicalProperty({ property }) {
+    return (value) => {
+        const { isLogical, rawValue } = extractLogicalValue(value);
+        const {
+            blockStartValue,
+            blockEndValue,
+            inlineStartValue,
+            inlineEndValue,
+        } = getFourDimensionalValue(rawValue);
+        if (!isLogical) return;
+
+        if (inlineStartValue === inlineEndValue) {
+            return {
+                base: `${property}: ${rawValue}`,
+            };
+        }
+
+        return {
+            ltr: `${property}: ${blockStartValue} ${inlineStartValue} ${blockEndValue} ${inlineEndValue};`,
+            rtl: `${property}: ${rawValue}`,
+        };
+    };
+}
+
+export function transformPropertyWithLogicalDirectionalValues({
+    property,
+    inlineStartValue,
+    inlineEndValue,
+}) {
+    return (value) => {
+        if (value === inlineStartValue) {
+            return {
+                ltr: `${property}: left`,
+                rtl: `${property}: right`,
+            };
+        }
+        if (value === inlineEndValue) {
+            return {
+                ltr: `${property}: right`,
+                rtl: `${property}: left`,
+            };
         }
     };
 }
@@ -216,23 +173,74 @@ export function transformPropertyWithLogicalValues({ property }) {
             block: 'vertical',
             inline: 'horizontal',
         };
-        if (!logicalValues[value]) {
-            return `
-                & {
-                    ${property}: ${value};
-                }
-            `;
-        } else {
-            return `
-                & {
-                    ${property}: ${logicalValues[value]};
-                    ${property}: ${value};
-                }
-            `;
+        if (logicalValues[value]) {
+            return {
+                base: `${property}: ${logicalValues[value]};`,
+            };
         }
     };
 }
 
-function toArray(item) {
-    return Array.isArray(item) ? item : [item]; 
+function getKeysFromValue(value) {
+    return value.trim().split(/\s+/);
+}
+
+function getInlineValue(value) {
+    const keys = getKeysFromValue(value);
+    if (keys.length === 1) {
+        return {
+            baseValue: value,
+        };
+    }
+
+    return {
+        startValue: keys[0],
+        endValue: keys[1],
+    };
+}
+
+function extractLogicalValue(value) {
+    const keys = getKeysFromValue(value);
+    const isLogical = keys[0] === 'logical';
+    if (isLogical) keys.shift();
+
+    return {
+        rawValue: keys.join(' '),
+        isLogical,
+    };
+}
+
+function getFourDimensionalValue(value) {
+    const keys = getKeysFromValue(value);
+
+    if (keys.length === 1) {
+        return {
+            blockStartValue: keys[0],
+            blockEndValue: keys[0],
+            inlineStartValue: keys[0],
+            inlineEndValue: keys[0],
+        };
+    }
+    if (keys.length === 2) {
+        return {
+            blockStartValue: keys[0],
+            blockEndValue: keys[0],
+            inlineStartValue: keys[1],
+            inlineEndValue: keys[1],
+        };
+    }
+    if (keys.length === 3) {
+        return {
+            blockStartValue: keys[0],
+            blockEndValue: keys[2],
+            inlineStartValue: keys[1],
+            inlineEndValue: keys[1],
+        };
+    }
+    return {
+        blockStartValue: keys[0],
+        blockEndValue: keys[2],
+        inlineStartValue: keys[3],
+        inlineEndValue: keys[1],
+    };
 }
