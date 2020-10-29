@@ -1,6 +1,6 @@
 {
     "name": "stylis-plugin-logical",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "Stylis plugin allowing the use of CSS Logical Properties and Values",
     "main": "dist/main.js",
     "scripts": {
