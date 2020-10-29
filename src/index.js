@@ -1,7 +1,7 @@
 import transforms from './utils/transforms';
 import { generateStyles } from './utils/index';
 
-export default function LogicalPlugin() {
+function LogicalPlugin() {
     let skip = false;
     let store = {};
 
@@ -53,3 +53,5 @@ function generateLogicalStyles(store) {
 
     return logicalStyles;
 }
+
+export default LogicalPlugin();
