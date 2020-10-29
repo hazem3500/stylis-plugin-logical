@@ -11,7 +11,7 @@ function LogicalPlugin() {
         store[selector].push(transforms[property](value));
     }
 
-    return function (
+    return function stylisLogicalPlugin(
         context,
         content,
         selectors,
