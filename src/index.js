@@ -26,7 +26,6 @@ export default function LogicalPlugin() {
                 var index = content.indexOf(':');
                 var property = content.substring(0, index);
                 var value = content.substring(index + 1).trim();
-                var prop = name + ':' + value;
                 return generateFallbackStyles({
                     selector: selectors.join(' '),
                     property,
@@ -35,7 +34,10 @@ export default function LogicalPlugin() {
             case -2:
                 skip = true;
                 const logicalStyles = generateLogicalStyles(store);
-                return content + this('', logicalStyles);
+                const finalStyles = content + this('', logicalStyles);
+                skip = false;
+                store = {};
+                return finalStyles;
             default:
                 break;
         }
