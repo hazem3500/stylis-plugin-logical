@@ -22,7 +22,7 @@ import stylisPluginLogical from "stylis-plugin-logical";
 
 
 const cache = createCache({
-  stylisPlugins: [stylisPluginLogical()]
+  stylisPlugins: [stylisPluginLogical]
 });
 
 function Root({children}) {
